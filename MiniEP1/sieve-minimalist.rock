@@ -12,10 +12,11 @@ Power takes Potency
 (blank line ending function declaration)
 
 Modulus takes Number and Divisor
-    While Number is as high as Divisor
-        Put Number minus Divisor into Number
-    (blank line ending While block)
-    Give back Number
+    Let x be Number / Divisor
+    Let y be x 
+    Turn down x
+    Let modulo be y - x
+    Give back modulo * Divisor
 (blank line ending function declaration)
 
 Listen to Input
