@@ -1,0 +1,49 @@
+( miniEP1 )
+( Felipe Kenzo K. Mashuda, 10274415 )
+( naoseicomorodarainda )
+
+Power takes Potency
+    Result is 1
+    While Potency is greater than 0
+        Put Result * 2 into Result
+        Knock Potency down
+    (blank line ending While block)
+    Give Back Result
+(blank line ending function declaration)
+
+Modulus takes Number and Divisor
+    Let x be Number / Divisor
+    Let y be x 
+    Turn down x
+    Let modulo be y - x
+    Give back modulo * Divisor
+(blank line ending function declaration)
+
+Listen to Input
+Put Power taking Input into N
+Primes is 1
+Special Primes is 1
+Let Sieve at N be mysterious
+i is 2
+While i is lower than N+1
+    Let Sieve at i be true
+    Build i up
+(blank line ending While block)
+i is 3
+While i is lower than N+1
+    Let conditional be Sieve at i
+    If conditional is ok
+        Build Primes up
+        If Modulus taking i, 4 is not 3
+            Build Special Primes up
+        (blank line ending If block)
+        Put i*i into j
+        While j is lower than N+1
+            Put false into Sieve at j
+            Let j be with 2*i
+        (blank line ending While block)
+    (blank line ending If block)
+    Build i up, up
+(blank line ending While block)
+Shout Primes
+Shout Special Primes
