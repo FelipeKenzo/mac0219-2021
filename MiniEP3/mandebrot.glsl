@@ -21,13 +21,46 @@ precision mediump float;
 #define Xd (Xj - Xi)
 #define Yd (Yj - Yi)
 
-float interpolate(A, B, percentage) {
-    return sqrt(A*A*(1-percentage) + B*B*(percentage));
+float interpolate(float A, float B, float percentage) {
+    return sqrt(A*A*(1.0-percentage) + B*B*(percentage));
 }
 
 // diferente do código em JS
 // a GPU roda essa função main para cada pixel
 void main() {
+    float S[6];
+    float R[6];
+    float G[6];
+    float B[6];
+
+    S[0] = 0.0;
+    S[1] = 10.0;
+    S[2] = 80.0;
+    S[3] = 150.0;
+    S[4] = 200.0;
+    S[5] = 255.0;
+
+    R[0] = 0.0;
+    R[1] = 32.0;
+    R[2] = 237.0;
+    R[3] = 255.0;
+    R[4] = 100.0;
+    R[5] = 0.0;
+
+    G[0] = 7.0;
+    G[1] = 107.0;
+    G[2] = 255.0;
+    G[3] = 170.0;
+    G[4] = 120.0;
+    G[5] = 0.0;
+
+    B[0] = 100.0;
+    B[1] = 203.0;
+    B[2] = 255.0;
+    B[3] = 0.0;
+    B[4] = 0.0;
+    B[5] = 0.0;
+
     // Aqui o pixel é guardado num vetor de 4 floats
     // Também segue o formato RGBA, mas dessa vez
     // os campos variam de 0.0 a 1.0
@@ -45,7 +78,7 @@ void main() {
     //compute a cor do pixel aqui
     float zx = 0.0;
     float zy = 0.0;
-    int out_steps;
+    float out_steps;
     for (int steps = 0; steps < 255; steps++) {
         float new_zx = zx*zx - zy*zy + x;
         float new_zy = 2.0*zx*zy + y;
@@ -54,14 +87,50 @@ void main() {
         if ((zx*zx + zy*zy) > 4.0) {
             break;
         }
-        out_steps++;
+        out_steps += 1.0;
     }
 
-    float corrected = float(out_steps) / 255.0;
+    float s_table_r;
+    float r_table_r;
+    float g_table_r;
+    float b_table_r;
 
-    float red = corrected;
-    float green = corrected;
-    float blue = corrected;
+    float s_table_l;
+    float r_table_l;
+    float g_table_l;
+    float b_table_l;
+
+    int idx = 0;
+    for (int i = 0; i < 6; i++) {
+        if (S[i] >= out_steps) {
+            s_table_r = S[i];
+            r_table_r = R[i];
+            g_table_r = G[i];
+            b_table_r = B[i];
+            
+            if (i > 0) {
+                s_table_l = S[i-1];
+                r_table_l = R[i-1];
+                g_table_l = G[i-1];
+                b_table_l = B[i-1];
+            }
+            idx = i;
+            break;
+        };
+    }
+
+    float percentage = 1.0;
+    if (idx != 0) percentage = (out_steps - s_table_l)/(s_table_r - s_table_l);
+
+    float red   = R[0]/255.0;
+    float green = G[0]/255.0;
+    float blue  = B[0]/255.0;
+
+    if (idx > 0) {
+        red   = interpolate(r_table_l, r_table_r, percentage)/255.0;
+        green = interpolate(g_table_l, g_table_r, percentage)/255.0;
+        blue  = interpolate(b_table_l, b_table_r, percentage)/255.0;
+    }
 
     //*****************************
     // Aplica a cor

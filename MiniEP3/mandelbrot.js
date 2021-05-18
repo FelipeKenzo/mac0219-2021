@@ -13,6 +13,15 @@ const Yj = +1.5;
 const Xd = Xj - Xi;
 const Yd = Yj - Yi;
 
+const S = [  0,  10,  80, 150, 200, 255]
+const R = [  0,  32, 237, 255, 100,   0]
+const G = [  7, 107, 255, 170, 120,   0]
+const B = [100, 203, 255,   0,   0,   0]
+
+const interpolate = (a, b, percentage) => {
+    return Math.sqrt(a*a*(1-percentage) + b*b*(percentage))
+}
+
 const main = (data) => {
     //Data é um array de bytes que representa a imagem
     //O valor mínimo é 0 e o máximo é 255
@@ -44,9 +53,12 @@ const main = (data) => {
             steps = steps + 1;
         }
 
-        const red = steps;
-        const green = steps;
-        const blue = steps;
+        const idx = S.findIndex((s) => s >= steps);
+        const percentage = idx ? (steps - S[idx-1])/(S[idx] - S[idx-1]) : 1.0;
+
+        const red   = percentage != 1.0 ? interpolate(R[idx-1], R[idx], percentage) : R[idx];
+        const green = percentage != 1.0 ? interpolate(G[idx-1], G[idx], percentage) : G[idx];
+        const blue  = percentage != 1.0 ? interpolate(B[idx-1], B[idx], percentage) : B[idx];
 
         //*****************************
         
